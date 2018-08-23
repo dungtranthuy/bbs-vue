@@ -36,11 +36,11 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDetailArticle: 'getDetailArticle',
+      detailArticle: 'detailArticle',
     }),
   },
   created() {
-    this.getDetailArticle(this.$route.params.id);
+    this.detailArticle(this.$route.params.id);
   },
 };
 </script>
