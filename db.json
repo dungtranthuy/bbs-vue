@@ -1,3 +1,37 @@
 {
-  "articles": []
+  "articles": [
+    {
+      "required": false,
+      "default": {},
+      "title": "bbs",
+      "content": "content bbs",
+      "author": "author bbs",
+      "email": "bbs0@gmail.com",
+      "updatedDate": "2018-08-23T09:14:50.304Z",
+      "count": 0,
+      "id": 1
+    },
+    {
+      "required": false,
+      "default": {},
+      "title": "bbs1",
+      "content": "content bbs1",
+      "author": "author bbs1",
+      "email": "bbs1@gamil.com",
+      "updatedDate": "2018-08-23T08:56:38.014Z",
+      "count": 0,
+      "id": 2
+    },
+    {
+      "required": false,
+      "default": {},
+      "title": "bbs2",
+      "content": "content bbs2",
+      "author": "author2",
+      "email": "thuydung02@gmail.com",
+      "updatedDate": "2018-08-23T08:59:26.160Z",
+      "count": 0,
+      "id": 3
+    }
+  ]
 }

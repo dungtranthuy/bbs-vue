@@ -31,27 +31,16 @@
 <script>
 import {mapGetters, mapActions} from 'vuex';
 export default {
-  // data() {
-  //   return {
-  //     article: {
-  //       type: Object,
-  //       required: false,
-  //       default: {},
-  //     },
-  //   };
-  // },
   computed: {
-    ...mapGetters({
-      article: 'getDetailArticle',
-    }),
+    ...mapGetters(['article']),
   },
   methods: {
     ...mapActions({
-      detailArticle: 'detailArticle',
+      getDetailArticle: 'getDetailArticle',
     }),
   },
   created() {
-    this.detailArticle(this.$route.params.id);
+    this.getDetailArticle(this.$route.params.id);
   },
 };
 </script>

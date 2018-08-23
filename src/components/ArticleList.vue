@@ -18,7 +18,8 @@
         />
     </ul>
     <div class="bottomPage">
-      <select class='chooseNumPage' @change="changeNumberPage">
+      <select class='chooseNumPage' @change="changeNumberPage" v-model="selected">
+          <!-- <option disabled value="">Please select one</option> -->
           <option value="1">1</option>
           <option value="3">3</option>
           <option value="5">5</option>
@@ -31,6 +32,98 @@
     </div>
   </div>
 </template>
+
+<script>
+import {mapGetters, mapActions} from 'vuex';
+import ArticleItem from './ArticleItem';
+import ArticleModal from './ArtcileModal';
+
+export default {
+  name: 'App',
+  data() {
+    return {
+      showModal: false,
+      data: {},
+      index: 1,
+      numberPerPage: 1,
+      selected: 1,
+    };
+  },
+  components: {
+    ArticleModal,
+    ArticleItem,
+  },
+  computed: {
+    ...mapGetters(['articles', 'pageSize']),
+    start: function() {
+      return (this.index - 1) * this.numberPerPage;
+    },
+    end: function() {
+      return this.start + this.numberPerPage;
+    },
+    dataArticles: function() {
+      return this.articles.slice(this.start, this.end);
+    },
+  },
+  methods: {
+    handleSubmit(article) {
+      article.updatedDate = new Date().toISOString();
+      if (article.id) {
+        this.updateArticle(article);
+      } else {
+        article.count = 0;
+        this.addNewArticle(article);
+      }
+      this.data = {};
+      this.showModal = false;
+    },
+    handleCloseModal() {
+      this.showModal = false;
+    },
+    handleEdit(data) {
+      this.data = data;
+      this.showModal = true;
+    },
+    handleDelete(data) {
+      this.deleteArticle(data).then(() => {
+        this.getArticles();
+      });
+    },
+    handleViewArticle(data) {
+      const id = data.id;
+      ++data.count;
+      this.updateArticle(data).then(() => {
+        this.$router.push({
+          path: `/article-detail/${id}`,
+        });
+      });
+    },
+    handlePrev() {
+      if (this.index > 1) {
+        --this.index;
+      }
+    },
+    handleNext() {
+      if (this.index * this.numberPerPage < this.pageSize) {
+        ++this.index;
+      }
+    },
+    changeNumberPage(e) {
+      this.numberPerPage = this.selected;
+      this.index = 1;
+    },
+    ...mapActions({
+      getArticles: 'getArticles',
+      addNewArticle: 'addNewArticle',
+      updateArticle: 'updateArticle',
+      deleteArticle: 'deleteArticle',
+    }),
+  },
+  created() {
+    this.getArticles();
+  },
+};
+</script>
 
 <style scoped>
 ul {
@@ -51,102 +144,3 @@ ul {
   margin: 3px 0 0 20px;
 }
 </style>
-
-<script>
-import {mapGetters, mapActions} from 'vuex';
-import ArticleItem from './ArticleItem';
-import ArticleModal from './ArtcileModal';
-
-export default {
-  name: 'App',
-  data() {
-    return {
-      showModal: false,
-      data: {
-        type: Object,
-        required: false,
-        default: {},
-      },
-      index: 1,
-      numberPerPage: 1,
-    };
-  },
-  components: {
-    ArticleModal,
-    ArticleItem,
-  },
-  computed: {
-    ...mapGetters({
-      articles: 'getAllArticles',
-      pageSize: 'getPageSize',
-    }),
-    start: function() {
-      return (this.index - 1) * this.numberPerPage;
-    },
-    end: function() {
-      return this.start + this.numberPerPage;
-    },
-    dataArticles: function() {
-      return this.articles.slice(this.start, this.end);
-    },
-  },
-  methods: {
-    handleSubmit(article) {
-      article.updatedDate = new Date().toISOString();
-      if (article.id) {
-        this.updateArticle(article);
-      } else {
-        article.count = 0;
-        this.addNewArticle(article);
-      }
-      this.showModal = false;
-      this.article = {};
-    },
-    handleCloseModal() {
-      this.showModal = false;
-    },
-    handleEdit(data) {
-      this.data = data;
-      this.showModal = true;
-    },
-    handleDelete(data) {
-      this.deleteArticle(data).then(() => {
-        this.getArticles();
-      });
-    },
-    handleViewArticle(data) {
-      console.log('DATA', data);
-      const id = data.id;
-      ++data.count;
-      this.updateArticle(data).then(() => {
-        this.$router.push({
-          path: `/article-detail/${id}`,
-        });
-      });
-    },
-    handlePrev() {
-      if (this.index > 1) {
-        --this.index;
-      }
-    },
-    handleNext() {
-      if (this.index * this.numberPerPage < this.pageSize) {
-        ++this.index;
-      }
-    },
-    changeNumberPage(e) {
-      this.numberPerPage = parseInt(e.target.value);
-    },
-    ...mapActions({
-      getArticles: 'getArticles',
-      addNewArticle: 'addNewArticle',
-      updateArticle: 'updateArticle',
-      deleteArticle: 'deleteArticle',
-    }),
-  },
-  created() {
-    this.getArticles();
-    // this.$store.dispatch('getArticles');
-  },
-};
-</script>

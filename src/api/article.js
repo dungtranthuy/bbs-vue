@@ -17,8 +17,8 @@ const apiUpdateArticle = async(article) => {
   return response.data
 }
 
-const apiDeleteArticle = async(article) => {
-  const response = await axios.delete(`${API_URL}/articles/${article.id}`)
+const apiDeleteArticle = async(id) => {
+  const response = await axios.delete(`${API_URL}/articles/${id}`)
   return response.data
 }
 

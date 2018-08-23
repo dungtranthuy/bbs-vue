@@ -8,9 +8,9 @@ const state = {
 
 // getters
 const getters = {
-  getPageSize: state => state.articles.length,
-  getAllArticles: state => state.articles,
-  getDetailArticle: state => state.article
+  pageSize: state => state.articles.length,
+  articles: state => state.articles,
+  article: state => state.article
 }
 
 // actions
@@ -34,14 +34,14 @@ const actions = {
   deleteArticle: async({
     commit
   }, article) => {
-    await articleApi.apiDeleteArticle(article);
+    await articleApi.apiDeleteArticle(article.id);
     commit('deleteArticle', article)
   },
   detailArticle: async({
     commit
   }, id) => {
     const data = await articleApi.apiDetailArticle(id);
-    commit('detailArticle', data)
+    commit('getDetailArticle', data)
   }
 }
 
@@ -68,7 +68,7 @@ const mutations = {
       .articles
       .filter(item => item.id !== article.id)
   },
-  detailArticle(state, article) {
+  getDetailArticle(state, article) {
     state.article = article
   }
 }
