@@ -3,46 +3,58 @@ import articleApi from '../../api/article'
 // initial state
 const state = {
   articles: [],
-  article: {}
+  article: {},
+  error: ''
 }
 
 // getters
 const getters = {
   pageSize: state => state.articles.length,
   articles: state => state.articles,
-  article: state => state.article
+  article: state => state.article,
+  error: state => state.error
+}
+
+const handleError = async(commit, fn) => {
+  try {
+    const res = await fn();
+    return res;
+  } catch (err) {
+    commit('getError', err.message)
+  }
 }
 
 // actions
 const actions = {
-  getArticles: async({commit}) => {
+  getArticles: async({commit}) => handleError(commit, async() => {
     const articles = await articleApi.apiFetchArticles();
     commit('getArticles', articles)
-  },
+  }),
   addNewArticle: async({
     commit
-  }, article) => {
+  }, article) => handleError(commit, async() => {
     const articles = await articleApi.apiAddArticle(article);
     commit('addNewArticle', articles)
-  },
+  }),
   updateArticle: async({
     commit
-  }, article) => {
+  }, article) => handleError(commit, async() => {
     const data = await articleApi.apiUpdateArticle(article);
     commit('updateArticle', data)
-  },
+  }),
   deleteArticle: async({
     commit
-  }, article) => {
+  }, article) => handleError(commit, async() => {
     await articleApi.apiDeleteArticle(article.id);
     commit('deleteArticle', article)
-  },
+  }),
   detailArticle: async({
     commit
-  }, id) => {
+  }, id) => handleError(commit, async() => {
     const data = await articleApi.apiDetailArticle(id);
     commit('getDetailArticle', data)
-  }
+    return data;
+  })
 }
 
 // mutations
@@ -70,6 +82,9 @@ const mutations = {
   },
   getDetailArticle(state, article) {
     state.article = article
+  },
+  getError(state, err) {
+    state.error = err
   }
 }
 

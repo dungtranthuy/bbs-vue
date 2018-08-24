@@ -90,12 +90,8 @@ export default {
       });
     },
     handleViewArticle(data) {
-      const id = data.id;
-      ++data.count;
-      this.updateArticle(data).then(() => {
-        this.$router.push({
-          path: `/article-detail/${id}`,
-        });
+      this.$router.push({
+        path: `/article-detail/${data.id}`,
       });
     },
     handlePrev() {

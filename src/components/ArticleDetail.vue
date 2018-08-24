@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 export default {
   computed: {
     ...mapGetters(['article']),
@@ -37,10 +37,20 @@ export default {
   methods: {
     ...mapActions({
       detailArticle: 'detailArticle',
+      updateArticle: 'updateArticle',
     }),
+    ...mapMutations(['getDetailArticle']),
   },
   created() {
-    this.detailArticle(this.$route.params.id);
+    this.detailArticle(this.$route.params.id).then(article => {
+      const updatedArticle = {
+        ...article,
+        count: article.count + 1,
+      };
+
+      this.updateArticle(updatedArticle);
+      this.$store.commit('getDetailArticle', updatedArticle);
+    });
   },
 };
 </script>
